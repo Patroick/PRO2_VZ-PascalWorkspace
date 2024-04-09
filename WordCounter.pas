@@ -22,10 +22,10 @@ PROGRAM WordCounter;
   VAR
     ht : Hashtable;
 
-  FUNCTION HashRabinKarp(s : STRING): WORD;
+  FUNCTION HashRabinKarp(s : STRING): LONGWORD;
   VAR
     i : INTEGER;
-    h : WORD;
+    h : LONGWORD;
   BEGIN
     h := Ord(s[1]);
     FOR i := 2 TO Length(s) DO
@@ -45,7 +45,7 @@ PROGRAM WordCounter;
 
   PROCEDURE Lookup(key : STRING);
   VAR
-    h : WORD;
+    h : LONGWORD;
     current : NodePtr;
 
   BEGIN
@@ -63,26 +63,26 @@ PROGRAM WordCounter;
     END;
   END; 
 
-  PROCEDURE DisposeHashtable();
+  PROCEDURE DisposeHashtable;
   VAR
     i : INTEGER;
-    current, next : NodePtr;
+    current : NodePtr;
 
   BEGIN
     (*dispose all nodes in the hashtable*)
-    FOR i := Low(ht) TP High(ht) DO BEGIN
+    FOR i := Low(ht) TO High(ht) DO BEGIN
       current := ht[i];
       WHILE current <> NIL DO BEGIN
-        next := current^.next;
+        ht[i] := current^.next;
         Dispose(current);
-        current := next;
+        current := ht[i];
       END;
     END;
   END;
 
 
   VAR
-    w: Word;
+    w: LONGWORD;
     n: LONGINT;
 
 BEGIN 
