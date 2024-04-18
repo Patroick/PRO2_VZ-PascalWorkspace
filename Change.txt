@@ -1,0 +1,4 @@
+1 2 erste
+1 7 Team
+3 4 genug.
+3 9 Drittel
