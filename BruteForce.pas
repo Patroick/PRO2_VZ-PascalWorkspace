@@ -38,7 +38,7 @@ PROGRAM PatternMatching;
         Inc(i);
       END;
       IF j > m THEN BEGIN 
-      BruteForce1 := i - 1;
+        BruteForce1 := i - 1;
       END ELSE BEGIN 
         BruteForce1 := 0; 
       END
@@ -320,10 +320,11 @@ FUNCTION KnuthMorrisPratt1(s, p: STRING): INTEGER;
   END;
 
 BEGIN
-  Test(BruteForce1);
+  { Test(BruteForce1);
   Test(BruteForce2);
   Test(KnuthMorrisPratt1);
   WriteLn('BruteForceRL: '); Test(BruteForceRL);
   WriteLn('BoyerMoore: '); Test(BoyerMoore);
-  WriteLn('RabinKarp: '); Test(RabinKarp);
+  WriteLn('RabinKarp: '); Test(RabinKarp); }
+  WriteLn(BruteForce1('Hagenberg', 'bergx'));
 END.
