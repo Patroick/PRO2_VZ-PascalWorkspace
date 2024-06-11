@@ -94,6 +94,14 @@ IMPLEMENTATION
       EndOpc: BEGIN
           Write1('End      ', opc);
         END;
+      JmpOpc: BEGIN
+          FetchOpd(opd);
+          Write2('Jump     ', opc, opd);
+        END;
+      JmpZOpc: BEGIN
+          FetchOpd(opd);
+          Write2('JumpZr   ', opc, opd);
+        END;
       ELSE
         WriteLn('*** Error: invalid operation code');
         HALT;

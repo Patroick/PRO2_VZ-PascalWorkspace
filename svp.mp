@@ -1,10 +1,9 @@
-PROGRAM Fakultat;
-VAR n, f: INTEGER;
-
+PROGRAM Test;
+VAR
+  a, b, c: INTEGER;
 BEGIN
-  f := n; n := n - 1;
-  IF n THEN BEGIN
-    f := 1;
-  END;
-  WRITE(f);
+  a := 1 + 2;
+  b := a * 3;
+  c := (b + 4) * 1;
+  WRITE(c);
 END.

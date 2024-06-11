@@ -1,9 +1,10 @@
 PROGRAM MidiPC;
-USES MidiP_Lex, MidiP_SS, CodeGen, CodeDef, CodeInt, CodeDis;
+USES MidiP_Lex, MidiPB_SS, CodeGen, CodeDef, CodeInt, CodeDis, Tree;
 
 VAR input : TEXT;
-    inputName : STRING;
+    inputName : STRING; 
     ca: CodeArray;
+    t: TreeNode;
 
 BEGIN
   inputName := '';
@@ -21,6 +22,7 @@ BEGIN
     GetCode(ca);
     StoreCode(inputname + 'c', ca);
     DisassembleCode(ca);
+    DisposeTree(t);
   END;
 
   Close(input);

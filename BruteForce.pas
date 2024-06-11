@@ -29,7 +29,7 @@ PROGRAM PatternMatching;
       j := 1;
   
       WHILE (i <= n - m + 1) AND (j = 1) DO BEGIN
-        WHILE (j <= m) AND (Eq(s[i + j - 1], p[j])) DO BEGIN
+        WHILE (j <= m) AND (Eq(s[i + j - 1], p[j]) OR (p[j] = '?')) DO BEGIN
           j := j + 1;
         END;
         IF j <= m THEN BEGIN

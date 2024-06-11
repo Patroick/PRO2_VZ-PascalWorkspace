@@ -4,7 +4,6 @@
 ===================================================================*)
 UNIT CodeGen;
 
-(*$I Chooser.inc*)
 
 INTERFACE
 
@@ -16,10 +15,9 @@ INTERFACE
   PROCEDURE Emit1(opc: OpCode);
   PROCEDURE Emit2(opc: OpCode; opd: INTEGER);
 
-(*$IFDEF Midi*)
   FUNCTION  CurAddr: INTEGER;
   PROCEDURE FixUp(addr: INTEGER; opd: INTEGER);
-(*$ENDIF*)
+
 
   PROCEDURE GetCode(VAR ca: CodeArray);
 
@@ -30,6 +28,7 @@ IMPLEMENTATION
     ca: CodeArray; (*array of opCodes and opderands*)
     n: INTEGER;    (*index of next free byte in c*)
 
+  
 
   PROCEDURE InitCodeGenerator;
 (*-----------------------------------------------------------------*)
@@ -73,8 +72,6 @@ IMPLEMENTATION
     EmitWord(opd);
   END; (*Emit1*)
 
-
-(*$IFDEF Midi*)
   FUNCTION CurAddr: INTEGER;
 (*-----------------------------------------------------------------*)
   BEGIN
@@ -87,7 +84,7 @@ IMPLEMENTATION
     ca[addr    ] := opd DIV 256;
     ca[addr + 1] := opd MOD 256;
   END; (*FixUp*)
-(*$ENDIF*)
+
 
 
   PROCEDURE GetCode(VAR ca: CodeArray);
@@ -95,6 +92,8 @@ IMPLEMENTATION
   BEGIN
     ca := CodeGen.ca;
   END; (*GetCode*)
+
+
 
 
 END. (*CodeGen*)

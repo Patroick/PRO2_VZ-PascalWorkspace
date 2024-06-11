@@ -1,4 +1,4 @@
-UNIT MidiP_SS; (* syntax analysator and semantic evaluation for minipascal *)
+UNIT MidiP_SS;
 
 INTERFACE
 VAR 
@@ -31,12 +31,6 @@ BEGIN
   NewSy;
 END;
 
-(* MP = "PROGRAM" ident ";"
-        [ VarDecl ]
-        "BEGIN"
-        StatSeq
-        "END" "." .
-*)
 PROCEDURE MP;
 BEGIN
   (* SEM *)
@@ -64,9 +58,6 @@ BEGIN
   NewSy;
 END;
 
-(* VarDecl = "VAR" ident { "," ident }
-             ":" "INTEGER" ";" .
-*)
 PROCEDURE VarDecl;
 VAR ok : BOOLEAN;
 BEGIN
@@ -78,7 +69,7 @@ BEGIN
   (* ENDSEM *)
   NewSy;
   WHILE sy = commaSy DO BEGIN
-    NewSy; (* skip ',' *)
+    NewSy;
     IF sy <> identSy THEN BEGIN success := FALSE; Exit; END;
     (* SEM *)
     DeclVar(identStr, ok);
@@ -95,12 +86,11 @@ BEGIN
   NewSy; 
 END;
 
-(* StatSeq = Stat { ";" Stat } . *)
 PROCEDURE StatSeq;
 BEGIN
   Stat; IF NOT success THEN Exit;
   WHILE sy = semiColonSy DO BEGIN
-    NewSy; (* skip ';' *)
+    NewSy;
     Stat; IF NOT success THEN Exit;
   END;
 END;
@@ -119,7 +109,7 @@ BEGIN
                  ELSE
                    Emit2(LoadAddrOpc, AddrOf(destId));
                  (* ENDSEM *)
-                 NewSy; (* skip ident *)
+                 NewSy;
                  IF sy <> assignSy THEN BEGIN success := FALSE; Exit; END;
                  NewSy;
                  Expr; IF NOT success THEN Exit;
@@ -129,7 +119,7 @@ BEGIN
                  (* ENDSEM *)
                END;
       readSy: BEGIN
-                NewSy; (* skip read *)
+                NewSy;
                 IF sy <> leftParSy THEN BEGIN success := FALSE; Exit; END;
                 NewSy;
                 IF sy <> identSy THEN BEGIN success := FALSE; Exit; END;
@@ -144,8 +134,7 @@ BEGIN
                 NewSy;
               END;
       writeSy: BEGIN 
-                 (* "WRITE" "(" Expr ")" *)
-                 NewSy; (* skip write *)
+                 NewSy; 
                  IF sy <> leftParSy THEN BEGIN success := FALSE; Exit; END;
                  NewSy;
                  Expr; IF NOT success THEN Exit;
@@ -156,41 +145,41 @@ BEGIN
                  NewSy;
                END;
       beginSy: BEGIN 
-                 NewSy; (* skip 'BEGIN' *)
+                 NewSy; 
                  StatSeq; IF NOT success THEN Exit;
                  IF sy <> endSy THEN BEGIN success := FALSE; Exit; END;
-                 NewSy; (* skip 'END' *)
+                 NewSy; 
                END;
-      ifSy: BEGIN (* new for IF *)
-              NewSy; (* skip 'IF' *)
+      ifSy: BEGIN 
+              NewSy; 
               IF sy <> identSy THEN BEGIN success := FALSE; Exit; END;
               (* SEM *)
               IF NOT IsDecl(identStr) THEN BEGIN
                 SemErr('variable not declared');
               END; (*IF*)
               Emit2(LoadValOpc, AddrOf(identStr));
-              Emit2(JmpZOpc, 0); (*0 as dummy address*)
+              Emit2(JmpZOpc, 0); 
               addr := CurAddr - 2; 
               (* ENDSEM *)
-              NewSy; (* skip ident *)
+              NewSy; 
               IF sy <> thenSy THEN BEGIN success := FALSE; Exit; END;
-              NewSy; (* skip 'THEN' *)
+              NewSy;
               Stat; IF NOT success THEN Exit;
               IF sy = elseSy THEN BEGIN
                 (* SEM *)
-                Emit2(JmpOpc, 0); (*0 as dummy address*)
+                Emit2(JmpOpc, 0); 
                 FixUp(addr, CurAddr);
                 addr := CurAddr - 2; 
                 (* ENDSEM *)
-                NewSy; (* skip 'ELSE' *)
+                NewSy; 
                 Stat; IF NOT success THEN Exit;
               END;
               (* SEM *)
               FixUp(addr, CurAddr);
               (* ENDSEM *)
             END; (* IF *)
-      whileSy: BEGIN (* new for WHILE *)
-                 NewSy; (* skip 'WHILE' *)
+      whileSy: BEGIN
+                 NewSy; 
                  IF sy <> identSy THEN BEGIN success := FALSE; Exit; END;
                  (* SEM *)
                  IF NOT IsDecl(identStr) THEN BEGIN
@@ -198,12 +187,12 @@ BEGIN
                    END; (*IF*)
                    addr1 := CurAddr;
                    Emit2(LoadValOpc, AddrOf(identStr));
-                   Emit2(JmpZOpc, 0); (*0 as dummy address*)
+                   Emit2(JmpZOpc, 0);
                    addr2 := CurAddr - 2; 
                  (* ENDSEM *)
-                 NewSy; (* skip ident *)
-                 IF sy <> doSy THEN BEGIN success := FALSE; Exit; END; (* new for DO *)
-                 NewSy; (* skip 'DO' *)
+                 NewSy;
+                 IF sy <> doSy THEN BEGIN success := FALSE; Exit; END;
+                 NewSy;
                  Stat; IF NOT success THEN Exit;
                  (* SEM *)
                  Emit2(JmpOpc, addr1);
@@ -215,19 +204,18 @@ BEGIN
 END; (* Stat *)
 
 
-(* Expr = Term { '+' Term | '-' Term } . *)
 PROCEDURE Expr;
 BEGIN
   Term; IF NOT success THEN Exit;
   WHILE (sy = plusSy) OR (sy = minusSy) DO BEGIN
     IF sy = plusSy THEN BEGIN
-      NewSy; (* skip + *)
+      NewSy; 
       Term; IF NOT success THEN Exit; 
       (* SEM *)     
       Emit1(AddOpc);
       (* ENDSEM *)
     END ELSE IF sy = minusSy THEN BEGIN
-      NewSy; (* skip - *)
+      NewSy; 
       Term; IF NOT success THEN Exit;
       (* SEM *)     
       Emit1(SubOpc);
@@ -236,19 +224,18 @@ BEGIN
   END; (* WHILE *)
 END; (* Expr *)
 
-(* Term = Fact { '*' Fact | '/' Fact } . *)
 PROCEDURE Term;
 BEGIN
   Fact; IF NOT success THEN Exit;
   WHILE (sy = mulSy) OR (sy = divSy) DO BEGIN
     IF sy = mulSy THEN BEGIN
-      NewSy; (* skip * *)
+      NewSy; 
       Fact; IF NOT success THEN Exit;
       (* SEM *)      
       Emit1(MulOpc);
       (* ENDSEM *)
     END ELSE IF sy = divSy THEN BEGIN
-      NewSy; (* skip / *)
+      NewSy; 
       Fact; IF NOT success THEN Exit;
       (* SEM *)
       Emit1(DivOpc);
@@ -257,7 +244,6 @@ BEGIN
   END; (* WHILE *)
 END; (* Term *)
 
-(* Fact = ident | number | '(' Expr ')' . *)
 PROCEDURE Fact;
 BEGIN
   IF sy = identSy THEN BEGIN
@@ -267,12 +253,12 @@ BEGIN
      ELSE
        Emit2(LoadValOpc, AddrOf(identStr));
      (* ENDSEM *)
-     NewSy; (* skip ident *)
+     NewSy; 
   END ELSE IF sy = numberSy THEN BEGIN
      (* SEM *)
      Emit2(LoadConstOpc, numberVal);
      (* ENDSEM *)
-     NewSy; (* skip number *)
+     NewSy;
   END ELSE IF sy = leftParSy THEN BEGIN
      IF sy <> leftParSy THEN BEGIN success := FALSE; Exit; END;
      NewSy;

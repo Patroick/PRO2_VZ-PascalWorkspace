@@ -4,8 +4,6 @@
 ===================================================================*)
 UNIT CodeDef;
 
-(*$I Chooser.inc*)
-
 INTERFACE
 
   CONST
@@ -23,10 +21,8 @@ INTERFACE
       DivOpc,
       ReadOpc,      (*addr = address of variable to read*)
       WriteOpc,
-(*$IFDEF Midi*)
       JmpOpc,       (*addr = code address to jump to*)
       JmpZOpc,      (*addr = code address to jump to on zero*)
-(*$ENDIF*)
       EndOpc);
 
     CodeArray = ARRAY [1 .. maxCodeLen] OF BYTE;

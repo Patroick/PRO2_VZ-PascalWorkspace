@@ -18,6 +18,7 @@ VAR sy : Symbol;
 
 PROCEDURE InitScanner(VAR input : TEXT);
 PROCEDURE NewSy;
+FUNCTION SymbolToString(sy: Symbol): STRING;
 
 IMPLEMENTATION
 CONST tabCh = Chr(9);
@@ -112,6 +113,40 @@ BEGIN
          END; (* ELSE *)             
   END; (* CASE *)
 END;
+
+FUNCTION SymbolToString(sy: Symbol): STRING;
+BEGIN
+  CASE sy OF
+    noSy: SymbolToString := 'noSy';
+    eofSy: SymbolToString := 'eofSy';
+    plusSy: SymbolToString := '+';
+    minusSy: SymbolToString := '-';
+    mulSy: SymbolToString := '*';
+    divSy: SymbolToString := '/';
+    leftParSy: SymbolToString := '(';
+    rightParSy: SymbolToString := ')';
+    semiColonSy: SymbolToString := ';';
+    colonSy: SymbolToString := ':';
+    periodSy: SymbolToString := '.';
+    assignSy: SymbolToString := ':=';
+    commaSy: SymbolToString := ',';
+    beginSy: SymbolToString := 'BEGIN';
+    endSy: SymbolToString := 'END';
+    varSy: SymbolToString := 'VAR';
+    programSy: SymbolToString := 'PROGRAM';
+    intSy: SymbolToString := 'INTEGER';
+    readSy: SymbolToString := 'READ';
+    writeSy: SymbolToString := 'WRITE';
+    ifSy: SymbolToString := 'IF';
+    thenSy: SymbolToString := 'THEN';
+    elseSy: SymbolToString := 'ELSE';
+    whileSy: SymbolToString := 'WHILE';
+    doSy: SymbolToString := 'DO';
+    identSy: SymbolToString := 'identifier';
+    numberSy: SymbolToString := 'number';
+  END; (* CASE *)
+END; (* SymbolToString *)
+
 
 BEGIN
 END.
