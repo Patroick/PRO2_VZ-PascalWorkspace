@@ -155,7 +155,7 @@ BEGIN
   END;
 
   p.GetElementAt(1, val, ok);
-  WriteLn('Value at index 1: ', val);
+  WriteLfn('Value at index 1: ', val);
 
   p.InsertElementAt(2, 6, ok);
   IF NOT ok THEN BEGIN
