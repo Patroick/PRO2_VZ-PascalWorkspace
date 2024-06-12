@@ -1,4 +1,4 @@
-UNIT MLInt;
+UNIT MLInteger;
 
 INTERFACE
 USES MLObj;
@@ -42,7 +42,7 @@ BEGIN
   IF other^.IsA('MLInt') THEN
     IsLessThan := SELF.val < MLInt(other)^.val
   ELSE
-    IsLessThan := INHERITED IsLessThan;
+    IsLessThan := INHERITED IsLessThan(other);
 END;
 
 BEGIN
