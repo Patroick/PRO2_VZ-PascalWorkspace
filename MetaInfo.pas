@@ -61,7 +61,6 @@ INTERFACE
 IMPLEMENTATION
   
   USES
-    WinCrt,
     MLObj;
     
   CONST
