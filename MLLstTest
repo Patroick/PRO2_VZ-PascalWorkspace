@@ -1,0 +1,38 @@
+PROGRAM TestMLList;
+USES MLObj, MLInteger, MLLst;
+
+FUNCTION NewMLInteger(val: INTEGER): MLInt;
+VAR i: MLInt;
+BEGIN
+  New(i, Init(val));
+  NewMLInteger := i
+END;
+
+PROCEDURE TestMLListAndIterator;
+VAR 
+  list : MLList;
+  it : MLListIterator;
+  o : MLObject;
+BEGIN
+  list := New(MLList, Init);
+
+  list^.Add(NewMLInteger(3));
+  list^.Add(NewMLInteger(2));
+  list^.Add(NewMLInteger(1));
+  
+
+  it := list^.NewIterator;
+  o := it^.Next;
+  WHILE o <> NIL DO BEGIN
+    WriteLn(o^.AsString);
+    Dispose(o, Done);
+    o := it^.Next;
+  END;
+  
+  Dispose(it, Done);
+  Dispose(list, Done);
+END;
+
+BEGIN
+  TestMLListAndIterator;
+END.

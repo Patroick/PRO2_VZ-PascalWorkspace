@@ -2,47 +2,49 @@ UNIT MLInteger;
 
 INTERFACE
 USES MLObj;
-TYPE
+
+TYPE 
   MLInt = ^MLIntObj;
   MLIntObj = OBJECT(MLObjectObj)
-                PRIVATE val : INTEGER;
-                PUBLIC
-                  CONSTRUCTOR Init(v : INTEGER);
-                  FUNCTION AsString : STRING; VIRTUAL;
-                  FUNCTION IsEqualTo(other: MLObject) : BOOLEAN; VIRTUAL;
-                  FUNCTION IsLessThan(other: MLObject) : BOOLEAN; VIRTUAL;
-  END;
+               PRIVATE val : INTEGER;
+               PUBLIC
+                 CONSTRUCTOR Init(val : INTEGER);
+                 FUNCTION AsString : STRING; VIRTUAL;
+                 FUNCTION IsEqualTo(other : MLObject) : BOOLEAN; VIRTUAL;
+                 FUNCTION IsLessThan(other : MLObject) : BOOLEAN; VIRTUAL;
+             END;
 
 IMPLEMENTATION
 
-CONSTRUCTOR MLIntObj.Init(v : INTEGER);
+CONSTRUCTOR MLIntObj.Init(val : INTEGER);
 BEGIN
   INHERITED Init;
   Register('MLInt', 'MLObject');
   SELF.val := val;
-END;  
+END;
 
 FUNCTION MLIntObj.AsString : STRING;
-VAR s: STRING;
+VAR s : STRING;
 BEGIN
   Str(val, s);
   AsString := s;
 END;
 
-FUNCTION MLIntObj.IsEqualTo(other: MLObject) : BOOLEAN;
+FUNCTION MLIntObj.IsEqualTo(other : MLObject) : BOOLEAN;
 BEGIN
-  IF other^.IsA('MLInt') THEN
-    IsEqualTo := SELF.val = MLInt(other)^.val
-  ELSE
-    IsEqualTo := FALSE;
+  IF other^.IsA('MLInt') THEN BEGIN
+    IsEqualTo := SELF.val = MLInt(other)^.val;
+  END ELSE 
+    IsEqualTo := FALSE;  
 END;
 
-FUNCTION MLIntObj.IsLessThan(other: MLObject) : BOOLEAN;
+(* a^.IsLessThan(b) *)
+FUNCTION MLIntObj.IsLessThan(other : MLObject) : BOOLEAN;
 BEGIN
-  IF other^.IsA('MLInt') THEN
-    IsLessThan := SELF.val < MLInt(other)^.val
-  ELSE
-    IsLessThan := INHERITED IsLessThan(other);
+  IF other^.IsA('MLInt') THEN BEGIN
+    IsLessThan := SELF.val < MLInt(other)^.val;
+  END ELSE 
+    IsLessThan := INHERITED IsLessThan(other)
 END;
 
 BEGIN

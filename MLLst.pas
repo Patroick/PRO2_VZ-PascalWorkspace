@@ -1,6 +1,9 @@
 UNIT MLLst;
 
 INTERFACE
+
+USES MLObj, MLColl;
+
 TYPE
   NodePtr = ^Node;
   Node = RECORD
@@ -9,8 +12,18 @@ TYPE
          END;
   ListPtr = NodePtr;
 
+  MLListIterator = ^MLListIteratorObj;
+  MLListIteratorObj = OBJECT
+                        PRIVATE
+                          n: NodePtr;
+                        PUBLIC
+                          CONSTRUCTOR Init(n: NodePtr);
+                          DESTRUCTOR Done; VIRTUAL;
+                          FUNCTION Next: MLObject; VIRTUAL;
+  END;
+
   MLList = ^MLListObj;
-  MLListObj = OBJECT
+  MLListObj = OBJECT(MLObjectObj)
                 PRIVATE
                   l: NodePtr;
                 PUBLIC
@@ -22,16 +35,7 @@ TYPE
                   FUNCTION Remove(o: MLObject): MLObject; VIRTUAL;
                   FUNCTION Contains(o: MLObject): BOOLEAN; VIRTUAL;
                   PROCEDURE Clear; VIRTUAL;
-                  FUNCTION NewIterator: MLIterator; VIRTUAL;
-  END;
-
-  MLListIterator = ^MLListIteratorObj;
-  MLListIteratorObj = OBJECT
-                        PRIVATE
-                          n: NodePtr;
-                          CONSTRUCTOR Init(n: NodePtr);
-                        PUBLIC
-                          FUNCTION Next: MLObject; VIRTUAL;
+                  FUNCTION NewIterator: MLListIterator; VIRTUAL;
   END;
 
 IMPLEMENTATION
@@ -39,7 +43,13 @@ IMPLEMENTATION
 CONSTRUCTOR MLListObj.Init;
 BEGIN
   INHERITED Init;
-  Register('MLList', 'MLCollection');
+  Register('MLList', 'MLObject');
+END;
+
+DESTRUCTOR MLListObj.Done;
+BEGIN
+  Clear;
+  INHERITED Done;
 END;
 
 PROCEDURE MLListObj.Prepend(val: MLObject);
@@ -65,8 +75,6 @@ BEGIN
 END;
 
 PROCEDURE MLListObj.Add(val: MLObject);
-VAR
-  n: NodePtr;
 BEGIN
   Prepend(val);
 END;
@@ -84,7 +92,7 @@ BEGIN
   IF n <> NIL THEN BEGIN
     IF prev = NIL THEN BEGIN
       Remove := n^.val;
-      l := n^.next
+      l := n^.next;
       Dispose(n);
     END ELSE BEGIN
       Remove := n^.val;
@@ -114,12 +122,34 @@ BEGIN
   END;
 END;
 
-FUNCTION MLListObj.NewIterator: MLIterator;
+FUNCTION MLListObj.NewIterator: MLListIterator;
 VAR
   it: MLListIterator;
 BEGIN
   New(it, Init(l));
   NewIterator := it;
+END;
+
+CONSTRUCTOR MLListIteratorObj.Init(n: NodePtr);
+BEGIN
+  SELF.n := n;
+END;
+
+FUNCTION MLListIteratorObj.Next: MLObject;
+VAR
+  o: MLObject;
+BEGIN
+  IF n <> NIL THEN BEGIN
+    o := n^.val;
+    n := n^.next;
+    Next := o;
+  END ELSE BEGIN
+    Next := NIL;
+  END;
+END;
+
+DESTRUCTOR MLListIteratorObj.Done;
+BEGIN
 END;
 
 BEGIN
